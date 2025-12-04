@@ -17,29 +17,33 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     if (password !== confirmPassword) {
       return setError('Passwords do not match');
     }
-
-    if (password.length < 6) {
-      return setError('Password must be at least 6 characters long');
-    }
-
+  
     setLoading(true);
-
+  
     try {
-      const response = await authAPI.register({ 
-        name, 
-        email, 
-        password,
-        role: 'operator' // default role
-      });
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      signup(response.user, response.token);
-      navigate('/dashboard');
+      if (name && email && password) {
+        const mockUser = {
+          id: 'user_' + Date.now(),
+          name: name,
+          email: email,
+          role: 'user'
+        };
+        
+        console.log('Creating user:', mockUser); // Debug
+        const mockToken = 'mock-jwt-token-' + Date.now();
+        signup(mockUser, mockToken);
+        navigate('/dashboard');
+      } else {
+        setError('Please fill all fields');
+      }
     } catch (err) {
-      setError(err.message || 'Failed to create account. Please try again.');
+      setError('Failed to create account. Please try again.');
     } finally {
       setLoading(false);
     }

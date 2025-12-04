@@ -16,14 +16,27 @@ function Login() {
     e.preventDefault();
     setError('');
     setLoading(true);
-
+  
     try {
-      const response = await authAPI.login({ email, password });
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      login(response.user, response.token);
-      navigate('/dashboard');
+      if (email && password) {
+        const mockUser = {
+          id: 'user_' + Date.now(),
+          name: email.split('@')[0],
+          email: email,
+          role: 'user'
+        };
+        
+        console.log('Creating user:', mockUser); // Debug
+        const mockToken = 'mock-jwt-token-' + Date.now();
+        login(mockUser, mockToken);
+        navigate('/dashboard');
+      } else {
+        setError('Please enter email and password');
+      }
     } catch (err) {
-      setError(err.message || 'Failed to login. Please try again.');
+      setError('Failed to login. Please try again.');
     } finally {
       setLoading(false);
     }

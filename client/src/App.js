@@ -11,6 +11,7 @@ import Contact from './pages/Contact';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import DashboardRedirect from './pages/DashboardRedirect';
+import Logout from './pages/Logout';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/logout" element={<Logout />} />
               <Route 
                 path="/dashboard" 
                 element={

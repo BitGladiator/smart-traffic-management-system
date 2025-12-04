@@ -18,20 +18,37 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData, token) => {
+    // Ensure userData has all required fields
+    const completeUserData = {
+      id: userData.id || '1',
+      name: userData.name || userData.email?.split('@')[0] || 'User',
+      email: userData.email || '',
+      role: userData.role || 'user'
+    };
+    
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(completeUserData));
+    setUser(completeUserData);
   };
-
+  
   const signup = (userData, token) => {
+    // Ensure userData has all required fields
+    const completeUserData = {
+      id: userData.id || Date.now().toString(),
+      name: userData.name || userData.email?.split('@')[0] || 'User',
+      email: userData.email || '',
+      role: userData.role || 'user'
+    };
+    
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(completeUserData));
+    setUser(completeUserData);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    sessionStorage.clear();
     setUser(null);
   };
 

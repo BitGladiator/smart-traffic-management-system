@@ -20,11 +20,14 @@ function App() {
       if (token) {
         sessionStorage.setItem('dashboard_token', token);
         const localUser = localStorage.getItem('user');
+        console.log('Raw user data from localStorage:', localUser); // Debug log
         if (localUser) {
           try {
-            setUser(JSON.parse(localUser));
+            const parsedUser = JSON.parse(localUser);
+            console.log('Parsed user data:', parsedUser); // Debug log
+            setUser(parsedUser);
           } catch (e) {
-            console.error('Error parsing user data');
+            console.error('Error parsing user data:', e);
           }
         }
         setIsAuthenticated(true);
@@ -45,13 +48,11 @@ function App() {
   }, [searchParams]);
 
   const handleLogout = () => {
-    sessionStorage.removeItem('dashboard_token');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    const mainAppUrl = process.env.NODE_ENV === 'production'
+    const clientUrl = process.env.NODE_ENV === 'production'
       ? window.location.origin.replace(/dashboard.*/, '')
       : 'http://localhost:3000';
-    window.location.href = `${mainAppUrl}/login`;
+    
+    window.location.href = `${clientUrl}/logout`;
   };
 
   const toggleSidebar = () => {
@@ -83,7 +84,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex">
-      <Sidebar collapsed={sidebarCollapsed} user={user} onLogout={handleLogout} />
+      <Sidebar 
+        collapsed={sidebarCollapsed} 
+        user={user} 
+        onLogout={handleLogout}
+        toggleSidebar={toggleSidebar}
+      />
       
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
         <Header 
