@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { authAPI } from '../../utils/api';
 import { UserPlus, Mail, Lock, User } from 'lucide-react';
 
 function Signup() {
@@ -21,28 +22,24 @@ function Signup() {
       return setError('Passwords do not match');
     }
 
+    if (password.length < 6) {
+      return setError('Password must be at least 6 characters long');
+    }
+
     setLoading(true);
 
     try {
-      // Mock API call - Replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await authAPI.register({ 
+        name, 
+        email, 
+        password,
+        role: 'operator' // default role
+      });
       
-      if (name && email && password) {
-        const mockUser = {
-          id: Date.now().toString(),
-          name: name,
-          email: email,
-          role: 'user'
-        };
-        
-        const mockToken = 'mock-jwt-token';
-        signup(mockUser, mockToken);
-        navigate('/dashboard');
-      } else {
-        setError('Please fill all fields');
-      }
+      signup(response.user, response.token);
+      navigate('/dashboard');
     } catch (err) {
-      setError('Failed to create account. Please try again.');
+      setError(err.message || 'Failed to create account. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -116,6 +113,7 @@ function Signup() {
                   className="input-field pl-10"
                   placeholder="••••••••"
                   required
+                  minLength={6}
                 />
               </div>
             </div>
@@ -133,6 +131,7 @@ function Signup() {
                   className="input-field pl-10"
                   placeholder="••••••••"
                   required
+                  minLength={6}
                 />
               </div>
             </div>

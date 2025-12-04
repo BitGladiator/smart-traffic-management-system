@@ -3,9 +3,9 @@ import React from 'react';
 function TrafficLight({ status = 'Medium' }) {
   const getColor = () => {
     const colors = {
-      low: 'bg-traffic-low',
-      medium: 'bg-traffic-medium',
-      high: 'bg-traffic-high'
+      low: 'bg-green-500',
+      medium: 'bg-amber-500',
+      high: 'bg-red-500'
     };
     return colors[status.toLowerCase()] || colors.medium;
   };

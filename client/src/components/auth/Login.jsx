@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { authAPI } from '../../utils/api';
 import { LogIn, Mail, Lock } from 'lucide-react';
 
 function Login() {
@@ -17,26 +18,12 @@ function Login() {
     setLoading(true);
 
     try {
-      // Mock API call - Replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await authAPI.login({ email, password });
       
-      // For demo purposes, accept any non-empty credentials
-      if (email && password) {
-        const mockUser = {
-          id: '1',
-          name: email.split('@')[0],
-          email: email,
-          role: 'user'
-        };
-        
-        const mockToken = 'mock-jwt-token';
-        login(mockUser, mockToken);
-        navigate('/dashboard');
-      } else {
-        setError('Please enter email and password');
-      }
+      login(response.user, response.token);
+      navigate('/dashboard');
     } catch (err) {
-      setError('Failed to login. Please try again.');
+      setError(err.message || 'Failed to login. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -134,20 +121,6 @@ function Login() {
               <Link to="/signup" className="text-primary-600 hover:text-primary-500 font-medium">
                 Sign up
               </Link>
-            </p>
-          </div>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Demo Credentials</span>
-              </div>
-            </div>
-            <p className="mt-4 text-sm text-gray-600 text-center">
-              Use any email and password for demo
             </p>
           </div>
         </div>
