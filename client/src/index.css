@@ -25,7 +25,7 @@
     @apply bg-white rounded-xl shadow-lg p-8;
   }
 }
-/* Add these styles to your existing index.css */
+
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }

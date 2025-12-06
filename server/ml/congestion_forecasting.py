@@ -145,7 +145,7 @@ def main():
     print("Training model...")
     forecaster.train_model(X_train, y_train)
 
-    print("Evaluating model...")
+    print("Evaluating mmodel...")
     forecaster.evaluate_model(X_test, y_test)
 
     forecaster.save_model()
