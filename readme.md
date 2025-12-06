@@ -29,6 +29,8 @@ STMS provides a comprehensive dashboard for monitoring, simulating, and optimizi
 - **Visual Indicators**: Color-coded traffic status (Green/Yellow/Red)
 - **Analytics Dashboard**: Interactive charts and traffic flow analytics
 - **AI Optimization**: Adaptive signal timing using predictive traffic models
+- **Traffic Load Prediction**: Machine learning model to forecast traffic volume and optimize signal timing
+- **Congestion Forecasting**: AI-powered algorithm to predict congestion levels using historical data
 - **Scenario Simulation**: Configurable simulations for rush hours, incidents, and delays
 - **Geospatial Visualization**: Intersection and city-level map-based views *(planned)*
 - **Alert System**: Real-time notifications for congestion zones
