@@ -1,5 +1,5 @@
-import React from 'react';
-import { Search, Bell, User, Menu, Calendar } from 'lucide-react';
+import React from "react";
+import { Search, Bell, User, Menu, Calendar } from "lucide-react";
 
 function Header({ user, onToggleSidebar, sidebarCollapsed }) {
   return (
@@ -13,10 +13,17 @@ function Header({ user, onToggleSidebar, sidebarCollapsed }) {
             >
               <Menu className="h-5 w-5" />
             </button>
-            
+
             <div className="hidden md:flex items-center space-x-2 text-gray-400">
               <Calendar className="h-4 w-4" />
-              <span className="text-sm">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span className="text-sm">
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
             </div>
           </div>
 
@@ -38,20 +45,22 @@ function Header({ user, onToggleSidebar, sidebarCollapsed }) {
             <div className="flex items-center space-x-3">
               <div className="h-9 w-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                 {user?.name ? (
-                  <span className="text-white font-medium">
+                  <span className="text-white font-medium text-sm">
                     {user.name.charAt(0).toUpperCase()}
                   </span>
                 ) : (
-                  <User className="h-5 w-5" />
+                  <User className="h-5 w-5 text-white" />
                 )}
               </div>
-              
+
               {!sidebarCollapsed && (
                 <div className="hidden lg:block">
-                  <div>
-                    <p className="text-sm font-medium text-white">{user?.name || 'Loading...'}</p>
-                    <p className="text-xs text-gray-400">{user?.email || 'User'}</p>
-                  </div>
+                  <p className="text-sm font-medium text-white">
+                    {user?.name || "Loading..."}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    {user?.email || "user@stms.ai"}
+                  </p>
                 </div>
               )}
             </div>

@@ -18,14 +18,14 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData, token) => {
-    // Ensure userData has all required fields
     const completeUserData = {
-      id: userData.id || '1',
+      id: userData.id || Date.now().toString(),
       name: userData.name || userData.email?.split('@')[0] || 'User',
-      email: userData.email || '',
+      email: userData.email || 'user@stms.ai',
       role: userData.role || 'user'
     };
     
+    console.log('AuthContext: Storing user data:', completeUserData); // Debug
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(completeUserData));
     setUser(completeUserData);
