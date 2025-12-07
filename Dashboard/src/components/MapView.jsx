@@ -1,139 +1,187 @@
-import React, { useState } from 'react';
-import { Navigation, ZoomIn, ZoomOut, Maximize2, Layers } from 'lucide-react';
+// components/MapView.jsx
+import React from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix for default icons in React-Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
+// Custom icons for different traffic conditions
+const createTrafficIcon = (color) => {
+  return L.divIcon({
+    html: `<div style="background-color: ${color}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+    iconSize: [24, 24],
+    className: 'traffic-marker'
+  });
+};
 
 function MapView() {
-  const [zoom, setZoom] = useState(1);
-  const [viewMode, setViewMode] = useState('traffic');
+  // Default center coordinates (adjust based on your city)
+  const center = [51.505, -0.09]; // London coordinates
+  // const center = [40.7128, -74.0060]; // New York coordinates
+  // const center = [1.3521, 103.8198]; // Singapore coordinates
 
-  const intersections = [
-    { id: 1, x: '30%', y: '25%', status: 'high' },
-    { id: 2, x: '50%', y: '40%', status: 'medium' },
-    { id: 3, x: '70%', y: '30%', status: 'low' },
-    { id: 4, x: '40%', y: '60%', status: 'high' },
-    { id: 5, x: '60%', y: '70%', status: 'medium' },
-    { id: 6, x: '20%', y: '50%', status: 'low' }
+  // Sample traffic data points
+  const trafficPoints = [
+    { position: [51.505, -0.09], status: 'heavy', description: 'Heavy traffic - Downtown area', color: '#ef4444' },
+    { position: [51.51, -0.1], status: 'moderate', description: 'Moderate traffic - Business district', color: '#f59e0b' },
+    { position: [51.49, -0.08], status: 'light', description: 'Light traffic - Residential area', color: '#10b981' },
+    { position: [51.52, -0.07], status: 'heavy', description: 'Accident reported - Major intersection', color: '#ef4444' },
+    { position: [51.495, -0.095], status: 'moderate', description: 'Rush hour traffic - School zone', color: '#f59e0b' },
   ];
 
-  const handleZoomIn = () => setZoom(Math.min(2, zoom + 0.1));
-  const handleZoomOut = () => setZoom(Math.max(0.5, zoom - 0.1));
+  // Sample camera locations
+  const cameraLocations = [
+    { position: [51.508, -0.095], id: 'CAM-001', status: 'active' },
+    { position: [51.502, -0.085], id: 'CAM-002', status: 'active' },
+    { position: [51.515, -0.105], id: 'CAM-003', status: 'maintenance' },
+    { position: [51.5, -0.1], id: 'CAM-004', status: 'active' },
+  ];
+
+  // Sample traffic signal locations
+  const signalLocations = [
+    { position: [51.507, -0.087], id: 'SIG-001', status: 'active' },
+    { position: [51.503, -0.092], id: 'SIG-002', status: 'active' },
+    { position: [51.512, -0.098], id: 'SIG-003', status: 'error' },
+  ];
 
   return (
-    <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className="text-xl font-semibold text-gray-200">Live Traffic Map</h3>
-          <p className="text-sm text-gray-400">Real-time city traffic visualization</p>
+    <div className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden h-[500px] relative">
+      {/* Loading fallback for SSR */}
+      <div className="absolute inset-0 bg-gray-900 flex items-center justify-center z-10">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading interactive map...</p>
         </div>
-        
-        <div className="flex items-center space-x-2">
-          <div className="flex bg-gray-800 rounded-lg p-1">
-            {['traffic', 'satellite', 'heatmap'].map((mode) => (
-              <button
-                key={mode}
-                onClick={() => setViewMode(mode)}
-                className={`px-3 py-1 rounded text-sm font-medium ${viewMode === mode ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'}`}
-              >
-                {mode.charAt(0).toUpperCase() + mode.slice(1)}
-              </button>
-            ))}
-          </div>
+      </div>
+
+      {/* Map Container - Only renders on client side */}
+      <div className="absolute inset-0 z-20">
+        <MapContainer
+          center={center}
+          zoom={13}
+          style={{ height: '100%', width: '100%' }}
+          zoomControl={true}
+          scrollWheelZoom={true}
+          className="rounded-2xl"
+        >
+          {/* OpenStreetMap Tile Layer */}
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
           
-          <button className="p-2 hover:bg-gray-800 rounded-lg">
-            <Maximize2 className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
+          {/* Alternative Map Tiles (uncomment to use) */}
+          {/* <TileLayer
+            attribution='Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+          /> */}
 
-      <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-gray-700 overflow-hidden min-h-[400px]">
-        <div className="absolute inset-0" style={{ transform: `scale(${zoom})` }}>
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-b from-blue-900/10 to-transparent"></div>
-            
-            <div className="absolute w-full h-full">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="absolute h-px bg-gray-700/50 w-full" style={{ top: `${(i + 1) * 12.5}%` }}></div>
-              ))}
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="absolute w-px bg-gray-700/50 h-full" style={{ left: `${(i + 1) * 12.5}%` }}></div>
-              ))}
-            </div>
-
-            {intersections.map((intersection) => (
-              <div
-                key={intersection.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2"
-                style={{ left: intersection.x, top: intersection.y }}
-              >
-                <div className="relative group">
-                  <div className={`h-10 w-10 rounded-full border-4 border-white shadow-lg ${intersection.status === 'high' ? 'bg-red-500' : intersection.status === 'medium' ? 'bg-yellow-500' : 'bg-green-500'}`}>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Navigation className="h-5 w-5 text-white" />
-                    </div>
-                  </div>
-                  
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="bg-gray-900 text-white text-sm px-3 py-2 rounded-lg whitespace-nowrap shadow-xl">
-                      Intersection #{intersection.id}
-                      <div className="text-xs text-gray-400 mt-1">
-                        Status: {intersection.status === 'high' ? 'Heavy' : intersection.status === 'medium' ? 'Moderate' : 'Light'}
-                      </div>
-                    </div>
+          {/* Traffic Condition Circles */}
+          {trafficPoints.map((point, index) => (
+            <Circle
+              key={`traffic-${index}`}
+              center={point.position}
+              radius={300}
+              pathOptions={{
+                fillColor: point.color,
+                color: point.color,
+                fillOpacity: 0.2,
+                opacity: 0.6,
+                weight: 2
+              }}
+            >
+              <Popup>
+                <div className="p-2">
+                  <h4 className="font-semibold text-gray-900 mb-1">Traffic Alert</h4>
+                  <p className="text-sm text-gray-600">{point.description}</p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: point.color }}></div>
+                    <span className="text-xs font-medium capitalize">{point.status} traffic</span>
                   </div>
                 </div>
+              </Popup>
+            </Circle>
+          ))}
+
+          {/* Camera Markers */}
+          {cameraLocations.map((camera, index) => (
+            <Marker
+              key={`camera-${index}`}
+              position={camera.position}
+              icon={createTrafficIcon(camera.status === 'active' ? '#3b82f6' : camera.status === 'maintenance' ? '#f59e0b' : '#6b7280')}
+            >
+              <Popup>
+                <div className="p-2">
+                  <h4 className="font-semibold text-gray-900 mb-1">Traffic Camera {camera.id}</h4>
+                  <p className="text-sm text-gray-600">
+                    Status: <span className={`font-medium ${camera.status === 'active' ? 'text-emerald-600' : camera.status === 'maintenance' ? 'text-amber-600' : 'text-red-600'}`}>
+                      {camera.status}
+                    </span>
+                  </p>
+                  <div className="mt-2 text-xs text-gray-500">
+                    Coordinates: {camera.position[0].toFixed(4)}, {camera.position[1].toFixed(4)}
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+
+          {/* Traffic Signal Markers */}
+          {signalLocations.map((signal, index) => (
+            <Marker
+              key={`signal-${index}`}
+              position={signal.position}
+              icon={L.divIcon({
+                html: `<div class="w-6 h-6 bg-white rounded-full flex items-center justify-center border-2 ${signal.status === 'active' ? 'border-emerald-500' : signal.status === 'error' ? 'border-red-500' : 'border-yellow-500'}">
+                  <div class="w-4 h-4 ${signal.status === 'active' ? 'bg-emerald-500' : signal.status === 'error' ? 'bg-red-500' : 'bg-yellow-500'} rounded-full"></div>
+                </div>`,
+                iconSize: [24, 24],
+                className: 'signal-marker'
+              })}
+            >
+              <Popup>
+                <div className="p-2">
+                  <h4 className="font-semibold text-gray-900 mb-1">Traffic Signal {signal.id}</h4>
+                  <p className="text-sm text-gray-600">
+                    Status: <span className={`font-medium ${signal.status === 'active' ? 'text-emerald-600' : 'text-red-600'}`}>
+                      {signal.status === 'active' ? 'Operational' : 'Needs Attention'}
+                    </span>
+                  </p>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+
+          {/* Legend (overlay) */}
+          <div className="absolute bottom-4 left-4 bg-gray-900/90 backdrop-blur-sm rounded-xl p-4 border border-gray-800 z-[1000]">
+            <h4 className="text-sm font-semibold text-gray-200 mb-2">Map Legend</h4>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                <span className="text-xs text-gray-300">Light Traffic</span>
               </div>
-            ))}
-
-            <div className="absolute bottom-4 left-4 bg-gray-900/90 backdrop-blur-sm rounded-lg p-3 border border-gray-700">
-              <div className="flex items-center space-x-2">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <span className="text-sm text-gray-300">Heavy</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <span className="text-sm text-gray-300">Moderate</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="text-sm text-gray-300">Light</span>
-                </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                <span className="text-xs text-gray-300">Moderate Traffic</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <span className="text-xs text-gray-300">Heavy Traffic</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span className="text-xs text-gray-300">Camera</span>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="absolute top-4 right-4 flex flex-col space-y-2">
-          <button
-            onClick={handleZoomIn}
-            className="p-2 bg-gray-900/90 backdrop-blur-sm border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            <ZoomIn className="h-5 w-5" />
-          </button>
-          <button
-            onClick={handleZoomOut}
-            className="p-2 bg-gray-900/90 backdrop-blur-sm border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            <ZoomOut className="h-5 w-5" />
-          </button>
-          <button className="p-2 bg-gray-900/90 backdrop-blur-sm border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
-            <Layers className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-4 grid grid-cols-3 gap-4">
-        <div className="text-center p-3 bg-gray-800/50 rounded-lg">
-          <p className="text-2xl font-bold text-white">12</p>
-          <p className="text-sm text-gray-400">Active Cameras</p>
-        </div>
-        <div className="text-center p-3 bg-gray-800/50 rounded-lg">
-          <p className="text-2xl font-bold text-white">48</p>
-          <p className="text-sm text-gray-400">Signals Online</p>
-        </div>
-        <div className="text-center p-3 bg-gray-800/50 rounded-lg">
-          <p className="text-2xl font-bold text-white">92%</p>
-          <p className="text-sm text-gray-400">System Health</p>
-        </div>
+        </MapContainer>
       </div>
     </div>
   );
