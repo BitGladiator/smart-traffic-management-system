@@ -19,7 +19,7 @@ function DashboardRedirect() {
   useEffect(() => {
     const redirectUrl =
       process.env.NODE_ENV === "production"
-        ? "/dashboard"
+        ? "https://smart-traffic-management-system-bpm.vercel.app/login"
         : "http://localhost:3001";
 
     const params = new URLSearchParams();
