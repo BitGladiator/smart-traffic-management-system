@@ -17,28 +17,33 @@ const server = http.createServer(app);
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: [
+    'http://localhost:3000', 
+    'http://localhost:3001',
+    'https://smart-traffic-management-system-black-kappa.vercel.app/', // Add after deploying
+    'https://smart-traffic-management-system-bpm.vercel.app/login' // Add after deploying
+  ],
   credentials: true,
   optionsSuccessStatus: 200
 };
 
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
+    origin: ["http://localhost:3000", "http://localhost:3001"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
 });
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'Server is running',
-    timestamp: new Date().toISOString() 
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -49,7 +54,7 @@ app.use("/api/traffic", trafficRoutes);
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+  res.status(404).json({ message: "Route not found" });
 });
 
 // Error handling middleware
@@ -66,10 +71,10 @@ server.listen(PORT, () => {
 });
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
+process.on("SIGTERM", () => {
+  console.log("SIGTERM signal received: closing HTTP server");
   server.close(() => {
-    console.log('HTTP server closed');
+    console.log("HTTP server closed");
     process.exit(0);
   });
 });
