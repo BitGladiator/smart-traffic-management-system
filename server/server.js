@@ -15,7 +15,7 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-// CORS configuration - FIXED: No wildcard in array
+// CORS configuration
 const allowedOrigins = [
   'http://localhost:3000', 
   'http://localhost:3001',
@@ -23,57 +23,20 @@ const allowedOrigins = [
   'https://smart-traffic-management-system-bpm.vercel.app'
 ];
 
+// FIXED: Use a simpler CORS configuration
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('CORS blocked for origin:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  exposedHeaders: ['Authorization'],
-  optionsSuccessStatus: 200,
-  maxAge: 86400 // 24 hours
+  exposedHeaders: ['Authorization']
 };
-
-// Socket.io configuration with same origins - FIXED: No wildcard
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins, // Use the array directly, no wildcard
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  },
-  transports: ['websocket', 'polling'],
-  pingTimeout: 60000,
-  pingInterval: 25000,
-});
 
 // Apply CORS middleware
 app.use(cors(corsOptions));
 
-// Handle preflight requests - FIXED: Use specific origins instead of '*'
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Max-Age', '86400');
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(403);
-  }
-});
+// REMOVED: Don't use app.options('*', ...) - it's causing the error
+// Express will handle OPTIONS requests automatically with the CORS middleware
 
 // Increase JSON payload limit
 app.use(express.json({ limit: '10mb' }));
@@ -244,6 +207,19 @@ app.get("/api/auth/validate", (req, res) => {
       error: "Invalid token" 
     });
   }
+});
+
+// Socket.io configuration
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  },
+  transports: ['websocket', 'polling'],
+  pingTimeout: 60000,
+  pingInterval: 25000,
 });
 
 // Routes
