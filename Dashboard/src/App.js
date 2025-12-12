@@ -2,11 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route, useSearchParams, useNavigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
-import DashboardGrid from './components/DashboardGrid';
-import AnalyticsPanel from './components/AnalyticsPanel';
-import MapView from './components/MapView';
 
-// Create separate page components
+// Import page components
 import OverviewPage from './pages/OverviewPage';
 import MapViewPage from './pages/MapViewPage';
 import AnalyticsPage from './pages/AnalyticsPage';
@@ -24,25 +21,37 @@ function App() {
 
   useEffect(() => {
     const checkAuth = () => {
-      // Read token from URL params first
-      const token = searchParams.get('token');
+      try {
+        // Check for token in multiple places
+        const urlToken = searchParams.get('token');
+        const localToken = localStorage.getItem('token');
+        const sessionToken = sessionStorage.getItem('dashboard_token');
+        
+        const token = urlToken || localToken || sessionToken;
 
-      if (token) {
-        // Store token from URL
-        localStorage.setItem('token', token);
-        sessionStorage.setItem('dashboard_token', token);
-      }
+        console.log('Auth Check:', {
+          urlToken: !!urlToken,
+          localToken: !!localToken,
+          sessionToken: !!sessionToken,
+          finalToken: !!token
+        });
 
-      // Then check all possible token sources
-      const storedToken =
-        token ||
-        localStorage.getItem('token') ||
-        sessionStorage.getItem('dashboard_token');
+        if (!token) {
+          console.log('No token found, redirecting to login');
+          redirectToLogin();
+          return;
+        }
 
-      if (storedToken) {
-        // Try to get user data from URL parameters first
+        // Store token if it came from URL
+        if (urlToken) {
+          localStorage.setItem('token', urlToken);
+          sessionStorage.setItem('dashboard_token', urlToken);
+        }
+
+        // Get user data from URL or localStorage
         let userData = null;
 
+        // Try URL params first
         const userName = searchParams.get('userName');
         const userEmail = searchParams.get('userEmail');
         const userId = searchParams.get('userId');
@@ -54,11 +63,9 @@ function App() {
             email: decodeURIComponent(userEmail),
             role: searchParams.get('userRole') || 'user'
           };
-
-          // Save for future
           localStorage.setItem('user', JSON.stringify(userData));
         } else {
-          // Try localStorage fallback
+          // Try localStorage
           const localUser = localStorage.getItem('user');
           if (localUser) {
             try {
@@ -69,7 +76,7 @@ function App() {
           }
         }
 
-        // Default user if nothing found
+        // Fallback user data
         if (!userData) {
           userData = {
             id: '1',
@@ -82,25 +89,40 @@ function App() {
         console.log('Setting user:', userData);
         setUser(userData);
         setIsAuthenticated(true);
-      } else {
-        // No token — redirect to main app login
-        const mainAppUrl =
-          process.env.NODE_ENV === 'production'
-            ? 'https://smart-traffic-management-system-black-kappa.vercel.app'
-            : 'http://localhost:3000';
 
-        setTimeout(() => {
-          window.location.href = `${mainAppUrl}/login`;
-        }, 1500);
+        // Clean up URL parameters after successful auth
+        if (urlToken) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+      } catch (error) {
+        console.error('Auth check error:', error);
+        redirectToLogin();
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     checkAuth();
   }, [searchParams]);
 
+  const redirectToLogin = () => {
+    const mainAppUrl =
+      process.env.NODE_ENV === 'production'
+        ? 'https://smart-traffic-management-system-black-kappa.vercel.app'
+        : 'http://localhost:3000';
+
+    setTimeout(() => {
+      window.location.href = `${mainAppUrl}/login`;
+    }, 1500);
+  };
+
   const handleLogout = () => {
+    // Clear all auth data
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.clear();
+
     const clientUrl =
       process.env.NODE_ENV === 'production'
         ? 'https://smart-traffic-management-system-black-kappa.vercel.app'

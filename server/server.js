@@ -15,7 +15,6 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-
 const allowedOrigins = [
   'http://localhost:3000', 
   'http://localhost:3001',
@@ -23,20 +22,30 @@ const allowedOrigins = [
   'https://smart-traffic-management-system-bpm.vercel.app'
 ];
 
-
+// Enhanced CORS configuration
 const corsOptions = {
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('Blocked origin:', origin);
+      callback(null, false);
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  exposedHeaders: ['Authorization']
+  exposedHeaders: ['Authorization'],
+  maxAge: 86400 // 24 hours
 };
 
-// Apply CORS middleware
 app.use(cors(corsOptions));
 
-// REMOVED: Don't use app.options('*', ...) - it's causing the error
-// Express will handle OPTIONS requests automatically with the CORS middleware
+// Preflight handling
+app.options('*', cors(corsOptions));
 
 // Increase JSON payload limit
 app.use(express.json({ limit: '10mb' }));
@@ -50,129 +59,6 @@ app.get("/api/health", (req, res) => {
     timestamp: new Date().toISOString(),
     allowedOrigins: allowedOrigins
   });
-});
-
-// Dashboard token endpoint
-app.post("/api/auth/dashboard-token", async (req, res) => {
-  try {
-    const { dashboardUrl } = req.body;
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ 
-        success: false, 
-        error: "Authorization token required" 
-      });
-    }
-    
-    const token = authHeader.split(' ')[1];
-    const jwt = require('jsonwebtoken');
-    
-    // Decode the token
-    const decoded = jwt.decode(token);
-    
-    if (!decoded) {
-      return res.status(401).json({ 
-        success: false, 
-        error: "Invalid token" 
-      });
-    }
-    
-    // Generate dashboard token
-    const dashboardToken = jwt.sign(
-      {
-        userId: decoded.userId || decoded.id || "1",
-        userName: decoded.userName || decoded.name || "User",
-        userEmail: decoded.userEmail || decoded.email || "user@stms.ai",
-        userRole: decoded.userRole || decoded.role || "user",
-        dashboardUrl: dashboardUrl,
-        source: "dashboard-redirect",
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + (15 * 60)
-      },
-      process.env.JWT_SECRET || "your-secret-key-change-in-production",
-      { expiresIn: '15m' }
-    );
-    
-    res.json({
-      success: true,
-      dashboardToken,
-      expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
-      user: {
-        id: decoded.userId || decoded.id || "1",
-        name: decoded.userName || decoded.name || "User",
-        email: decoded.userEmail || decoded.email || "user@stms.ai",
-        role: decoded.userRole || decoded.role || "user"
-      }
-    });
-    
-  } catch (error) {
-    console.error("Dashboard token error:", error);
-    res.status(500).json({ 
-      success: false, 
-      error: "Failed to generate dashboard token",
-      message: error.message 
-    });
-  }
-});
-
-// Dashboard callback endpoint
-app.post("/api/auth/dashboard-callback", (req, res) => {
-  try {
-    const { token, userId, userName, userEmail, userRole, redirect } = req.body;
-    
-    if (!token) {
-      return res.status(400).json({ 
-        success: false, 
-        error: "Token is required" 
-      });
-    }
-    
-    const dashboardUrl = "https://smart-traffic-management-system-bpm.vercel.app";
-    const redirectUrl = redirect || `${dashboardUrl}/dashboard`;
-    
-    const htmlResponse = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Redirecting to Dashboard...</title>
-        <script>
-          // Store token in localStorage
-          localStorage.setItem('authToken', '${token}');
-          localStorage.setItem('userData', JSON.stringify({
-            id: '${userId || "1"}',
-            name: '${userName || "User"}',
-            email: '${userEmail || "user@stms.ai"}',
-            role: '${userRole || "user"}'
-          }));
-          
-          // Redirect to dashboard
-          setTimeout(() => {
-            window.location.href = '${redirectUrl}';
-          }, 100);
-        </script>
-      </head>
-      <body>
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-          <div style="text-align: center;">
-            <h2>Authenticating...</h2>
-            <p>Redirecting to dashboard...</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
-    
-    res.setHeader('Content-Type', 'text/html');
-    res.send(htmlResponse);
-    
-  } catch (error) {
-    console.error("Dashboard callback error:", error);
-    res.status(500).json({ 
-      success: false, 
-      error: "Authentication failed" 
-    });
-  }
 });
 
 // Token validation endpoint
@@ -190,7 +76,10 @@ app.get("/api/auth/validate", (req, res) => {
   
   try {
     const jwt = require('jsonwebtoken');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-key-change-in-production");
+    const decoded = jwt.verify(
+      token, 
+      process.env.JWT_SECRET || "your-secret-key-change-in-production"
+    );
     
     res.json({
       valid: true,
@@ -204,7 +93,8 @@ app.get("/api/auth/validate", (req, res) => {
   } catch (error) {
     res.status(401).json({ 
       valid: false, 
-      error: "Invalid token" 
+      error: "Invalid token",
+      message: error.message
     });
   }
 });
@@ -245,21 +135,23 @@ require("./sockets/trafficSockets")(io);
 
 // Socket connection logging
 io.on("connection", (socket) => {
-  console.log(`New client connected: ${socket.id}`);
-  console.log(`Origin: ${socket.handshake.headers.origin}`);
+  console.log(`✓ Client connected: ${socket.id}`);
+  console.log(`  Origin: ${socket.handshake.headers.origin}`);
   
   socket.on("disconnect", () => {
-    console.log(`Client disconnected: ${socket.id}`);
+    console.log(`✗ Client disconnected: ${socket.id}`);
   });
 });
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
+  console.log(`\n========================================`);
   console.log(`✓ Backend server running on port ${PORT}`);
   console.log(`✓ WebSocket server ready`);
   console.log(`✓ API available at http://localhost:${PORT}/api`);
   console.log(`✓ Allowed origins:`);
   allowedOrigins.forEach(origin => console.log(`  - ${origin}`));
+  console.log(`========================================\n`);
 });
 
 // Graceful shutdown
