@@ -49,7 +49,6 @@ function About() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-emerald-500/5"></div>
         <div className="container relative mx-auto px-4 py-20">
@@ -72,8 +71,6 @@ function About() {
           </div>
         </div>
       </section>
-
-      {/* Stats Section */}
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
@@ -93,8 +90,6 @@ function About() {
           </div>
         </div>
       </section>
-
-      {/* Mission Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -123,8 +118,6 @@ function About() {
           </div>
         </div>
       </section>
-
-      {/* Values Section */}
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -161,8 +154,6 @@ function About() {
           </div>
         </div>
       </section>
-
-      {/* Timeline Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -176,7 +167,6 @@ function About() {
 
           <div className="max-w-4xl mx-auto">
             <div className="relative">
-              {/* Timeline line */}
               <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-blue-500 to-emerald-500"></div>
               
               <div className="space-y-12">
@@ -200,8 +190,6 @@ function About() {
                         <p className="text-gray-700">{milestone.event}</p>
                       </div>
                     </div>
-                    
-                    {/* Timeline dot */}
                     <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gradient-to-r from-blue-600 to-emerald-500 rounded-full border-4 border-white shadow-lg"></div>
                   </div>
                 ))}
@@ -210,8 +198,6 @@ function About() {
           </div>
         </div>
       </section>
-
-      {/* Story Section */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">

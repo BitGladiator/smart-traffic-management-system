@@ -77,7 +77,6 @@ function Logout() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-emerald-50/20 pt-16">
-      {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-300/10 rounded-full blur-3xl"></div>
         <div className="absolute top-1/3 -left-20 w-60 h-60 bg-emerald-300/10 rounded-full blur-3xl"></div>
@@ -86,7 +85,6 @@ function Logout() {
       <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full">
           <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 sm:p-10 border border-gray-200/50 shadow-2xl shadow-blue-500/5">
-            {/* Header */}
             <div className="text-center mb-10">
               <div className="relative inline-block mb-6">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-emerald-500 blur-xl opacity-50 rounded-full"></div>
@@ -103,10 +101,7 @@ function Logout() {
                 Securing your session and data.
               </p>
             </div>
-
-            {/* Progress Section */}
             <div className="space-y-8 mb-10">
-              {/* Progress Bar */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Logout Progress</span>
@@ -119,8 +114,6 @@ function Logout() {
                   ></div>
                 </div>
               </div>
-
-              {/* Steps */}
               <div className="space-y-4">
                 {steps.map((stepItem, index) => (
                   <div 
@@ -159,8 +152,6 @@ function Logout() {
                 ))}
               </div>
             </div>
-
-            {/* Countdown */}
             <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-50 to-emerald-50 rounded-full mb-4 border-2 border-blue-200">
                 <div className="text-3xl font-bold text-blue-600">{countdown}</div>
@@ -169,8 +160,6 @@ function Logout() {
                 Redirecting to login in {countdown} second{countdown !== 1 ? 's' : ''}
               </p>
             </div>
-
-            {/* Manual Redirect */}
             <div className="text-center">
               <button
                 onClick={() => {

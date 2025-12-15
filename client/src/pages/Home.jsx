@@ -58,7 +58,6 @@ function Home() {
 
   return (
     <div className="overflow-hidden">
-      {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen flex items-center">
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full opacity-50 -translate-y-48 translate-x-48"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-emerald-100 to-teal-100 rounded-full opacity-50 -translate-x-48 translate-y-48"></div>
@@ -66,11 +65,6 @@ function Home() {
         <div className="container relative mx-auto px-4 py-24">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              {/* <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-cyan-100 rounded-full mb-8 border border-blue-200">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-gray-700">ENTERPRISE TRAFFIC INTELLIGENCE</span>
-              </div> */}
-              
               <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-tight text-gray-900">
                 Smart Traffic
                 <span className="block mt-2 bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">
@@ -116,8 +110,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Trusted By */}
       <section className="py-16 bg-white border-t border-b border-gray-200">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -134,8 +126,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Features */}
       <section className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
@@ -175,8 +165,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Integrations */}
       <section className="py-24 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
@@ -208,8 +196,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Security & Compliance */}
       <section className="py-24 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -280,8 +266,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* CTA */}
       <section className="py-24 bg-gradient-to-r from-blue-50 via-white to-emerald-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">

@@ -97,7 +97,6 @@ function Contact() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
-      {/* Hero Section - Redesigned */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent"></div>
         <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -121,14 +120,11 @@ function Contact() {
           </div>
         </div>
       </section>
-
-      {/* Main Content - Improved Layout */}
       <section className="py-8 pb-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Left Column - Contact Info & Support */}
             <div className="space-y-8">
-              {/* Contact Cards */}
+
               <div className="space-y-4">
                 {contactInfo.map((info, index) => (
                   <a
@@ -156,8 +152,6 @@ function Contact() {
                   </a>
                 ))}
               </div>
-
-              {/* Response Time Card */}
               <div className="bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl p-6 text-white">
                 <div className="flex items-center gap-3 mb-4">
                   <Clock className="h-6 w-6" />
@@ -181,8 +175,6 @@ function Contact() {
                 </div>
               </div>
             </div>
-
-            {/* Center Column - Contact Form */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg h-full">
                 {submitted ? (
@@ -333,8 +325,6 @@ function Contact() {
           </div>
         </div>
       </section>
-
-      {/* Global Offices Section */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
@@ -366,8 +356,6 @@ function Contact() {
           </div>
         </div>
       </section>
-
-      {/* FAQ Section - Redesigned */}
       <section className="py-16 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
