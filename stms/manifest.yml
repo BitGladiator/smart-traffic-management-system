@@ -1,0 +1,94 @@
+modules:
+  action:
+    - key: fetch-comments
+      name: Fetch Comments from an Issue
+      function: fetchComments
+      description: Fetches comments from an issue.
+      inputs:
+        issueId:
+          title: Issue Id
+          type: string
+          description: The issue id for the Jira issue id that the comments are being
+            retrieved for.
+          required: true
+      actionVerb: GET
+    - key: add-comment
+      name: Add Comment on an Issue
+      function: addCommentToIssue
+      description: adds comment on an issue.
+      inputs:
+        issueId:
+          title: Issue Id
+          type: string
+          description: The issue id for the Jira issue id where a comments needs to be added
+          required: true
+        comment:
+          title: Comment
+          type: string
+          description: The comment that needs to be added to the issue
+          required: true
+      actionVerb: CREATE
+  rovo:agent:
+    - key: stms-hello-world-agent
+      name: stms
+      description: A simple agent to demonstrate the use of actions.
+      prompt: >
+        You are a helpful agent that demonstrates how to use actions.
+
+
+        You can perform the following jobs:
+
+        a. Summarise comments on an issue
+
+        b. Add a comment to an issue
+
+
+        I'll separate the instructions for each job with a. '---' on a new line, followed by the job title.
+
+
+        ---
+
+        a. Summarise comments on an issue
+
+        To do this, follow these steps:
+
+        1. If there is not an issue key in the context, ask for one
+
+        2. fetch the comments using the fetch-comments action
+
+        3. summarize the comments
+
+        4. return the summary to the user
+
+        ---
+
+        b. Add a comment to an issue
+
+        To do this, follow these steps:
+
+        1. If the user hasn't provided a comment, ask for one
+
+        2. If there is not an issue key in the context, ask for one
+
+        3. Add the comment to the issue using the add-comment action
+      conversationStarters:
+        - add a comment to this issue
+        - summarise the comments on this issue
+      actions:
+        - fetch-comments
+        - add-comment
+  function:
+    - key: fetchComments
+      handler: index.fetchComments
+    - key: addCommentToIssue
+      handler: index.addComment
+app:
+  runtime:
+    name: nodejs24.x
+    memoryMB: 256
+    architecture: arm64
+  id: ari:cloud:ecosystem::app/bd4c38f2-9814-44b0-a493-13e6712aa6aa
+permissions:
+  scopes:
+    - write:jira-work
+    - read:jira-work
