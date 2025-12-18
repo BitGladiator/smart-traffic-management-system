@@ -30,13 +30,12 @@ function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="p-2 bg-gradient-to-br from-blue-600 to-emerald-500 rounded-lg group-hover:scale-105 transition-transform">
-              <TrafficCone className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <span className="text-xl font-bold text-gray-900">STMS</span>
-              <div className="text-xs text-gray-500">Traffic Management</div>
+          <Link to="/" className="flex items-center">
+          { /* <div className="p-2 bg-gradient-to-br from-blue-600 to-emerald-500 rounded-lg group-hover:scale-105 transition-transform">
+               <TrafficCone className="h-6 w-6 text-white" />
+            </div>  */}
+             <div className="h-17 flex items-center bg-white px-3 rounded-md">
+            <img src="/images/logo.png" alt="Logo" className="h-14 w-auto object-contain" />
             </div>
           </Link>
 
