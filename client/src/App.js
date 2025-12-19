@@ -13,7 +13,7 @@ import Signup from './components/auth/Signup';
 import DashboardRedirect from './pages/DashboardRedirect';
 import Logout from './pages/Logout';
 import NotFound from './pages/NotFound';
-
+import ChatBot from './components/ChatBot';
 function App() {
   return (
     <AuthProvider>
@@ -40,6 +40,7 @@ function App() {
             </Routes>
           </main>
           <Footer />
+          <ChatBot />
         </div>
       </Router>
     </AuthProvider>
