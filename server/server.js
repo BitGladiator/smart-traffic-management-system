@@ -17,7 +17,6 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   'http://localhost:3000', 
-  'http://localhost:3001',
   'https://smart-traffic-management-system-black-kappa.vercel.app',
   'https://smart-traffic-management-system-bpm.vercel.app'
 ];
