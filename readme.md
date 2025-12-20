@@ -148,4 +148,15 @@ For collaboration or technical questions:
 - **Discord**: Khushi Baloch  
 - **GitHub**: [@khushi0433](https://github.com/khushi0433)
 
+
+# Privacy Policy
+
+This app does not store, process, or share personal user data.
+It only accesses Jira issue data required for its functionality.
+
+# Terms of Service
+
+This app is provided as-is for demonstration and evaluation purposes.
+No guarantees or warranties are provided.
+
 If you find this project valuable, please consider giving it a **star** on GitHub. For enhanced documentation (installation, configuration, API specs), submit a feature request via GitHub Issues.
