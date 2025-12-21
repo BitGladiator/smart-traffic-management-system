@@ -14,8 +14,8 @@ function Pricing() {
       name: 'Starter',
       icon: <Zap className="h-8 w-8" />,
       description: 'Perfect for small municipalities and pilot projects',
-      monthlyPrice: 499,
-      annualPrice: 4990,
+      monthlyPrice: 60,
+      annualPrice: 750,
       color: 'blue',
       popular: false,
       features: [
@@ -38,8 +38,8 @@ function Pricing() {
       name: 'Professional',
       icon: <Shield className="h-8 w-8" />,
       description: 'Ideal for growing cities with medium traffic volume',
-      monthlyPrice: 1499,
-      annualPrice: 14990,
+      monthlyPrice: 250,
+      annualPrice: 3000,
       color: 'emerald',
       popular: true,
       features: [
@@ -62,8 +62,8 @@ function Pricing() {
       name: 'Enterprise',
       icon: <Crown className="h-8 w-8" />,
       description: 'Complete solution for large metropolitan areas',
-      monthlyPrice: 4999,
-      annualPrice: 49990,
+      monthlyPrice: 500,
+      annualPrice: 6000,
       color: 'violet',
       popular: false,
       features: [

@@ -21,7 +21,7 @@ function Checkout() {
   const planDetails = location.state || {
     plan: 'starter',
     planName: 'Starter',
-    price: 499,
+    price: 60,
     billingCycle: 'monthly'
   };
 
@@ -439,7 +439,7 @@ function Checkout() {
                   
                   <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
                     <p className="text-sm text-blue-800 font-medium mb-2">
-                      ℹ️ Payment Instructions:
+                      Payment Instructions:
                     </p>
                     <ul className="text-sm text-blue-700 space-y-1 ml-4">
                       <li>• Click the PayPal button below</li>
