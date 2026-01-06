@@ -1,6 +1,6 @@
 import React from "react";
 import { Search, Bell, User, Menu, Calendar } from "lucide-react";
-
+import { Crown } from "lucide-react";
 function Header({ user, onToggleSidebar, sidebarCollapsed }) {
   return (
     <header className="sticky top-0 z-10 bg-gray-900/80 backdrop-blur-lg border-b border-gray-800">
@@ -43,7 +43,7 @@ function Header({ user, onToggleSidebar, sidebarCollapsed }) {
             </button>
 
             <div className="flex items-center space-x-3">
-              <div className="h-9 w-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+              <div className="relative h-9 w-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                 {user?.name ? (
                   <span className="text-white font-medium text-sm">
                     {user.name.charAt(0).toUpperCase()}
@@ -51,15 +51,29 @@ function Header({ user, onToggleSidebar, sidebarCollapsed }) {
                 ) : (
                   <User className="h-5 w-5 text-white" />
                 )}
+
+                {/* Premium Badge */}
+                {user?.hasActiveSubscription && (
+                  <div className="absolute -top-1 -right-1 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full p-1 border-2 border-gray-900 shadow-lg animate-pulse">
+                    <Crown className="h-3 w-3 text-white" />
+                  </div>
+                )}
               </div>
 
               {!sidebarCollapsed && (
                 <div className="hidden lg:block">
-                  <p className="text-sm font-medium text-white">
-                    {user?.name || "Loading..."}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-white">
+                      {user?.name || "Loading..."}
+                    </p>
+                    {user?.hasActiveSubscription && (
+                      <span className="px-2 py-0.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-white text-xs font-bold rounded-full shadow-md">
+                        PRO
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs text-gray-400">
-                    {user?.email || "user@stms.ai"}
+                    {user?.subscriptionPlan || user?.email || "user@stms.ai"}
                   </p>
                 </div>
               )}

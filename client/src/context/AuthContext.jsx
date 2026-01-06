@@ -7,6 +7,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null); 
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -62,7 +63,10 @@ export const AuthProvider = ({ children }) => {
       id: finalUser.id || finalUser._id || Date.now().toString(),
       name: finalUser.name || finalUser.email?.split('@')[0] || 'User',
       email: finalUser.email || 'user@stms.ai',
-      role: finalUser.role || 'user'
+      role: finalUser.role || 'user',
+      hasActiveSubscription: finalUser.hasActiveSubscription || false, 
+      subscriptionPlan: finalUser.subscriptionPlan || null, 
+      subscriptionStatus: finalUser.subscriptionStatus || 'none' 
     };
     
     console.log('AuthContext: Storing user data:', completeUserData);
@@ -71,8 +75,39 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', finalToken);
     localStorage.setItem('user', JSON.stringify(completeUserData));
     setUser(completeUserData);
+    setSubscriptionStatus(completeUserData.subscriptionStatus); 
   };
+  const checkSubscription = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const API_BASE_URL = process.env.NODE_ENV === 'production' 
+        ? 'https://smart-traffic-management-system-23fs.onrender.com' 
+        : 'http://localhost:5500';
   
+      const response = await fetch(`${API_BASE_URL}/api/subscriptions/check-status`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      const data = await response.json();
+      
+      // Update user object with latest subscription status
+      if (user) {
+        const updatedUser = {
+          ...user,
+          hasActiveSubscription: data.hasActiveSubscription,
+          subscriptionPlan: data.subscription?.planName || null,
+          subscriptionStatus: data.subscription?.status || 'none'
+        };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setSubscriptionStatus(data.subscription?.status || 'none');
+      }
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+    }
+  };
   const signup = async (userData, token) => {
     let finalToken = token;
     let finalUser = userData;
@@ -174,7 +209,9 @@ export const AuthProvider = ({ children }) => {
     login,
     signup,
     logout,
-    loading
+    loading,
+    subscriptionStatus, 
+    checkSubscription 
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
