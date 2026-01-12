@@ -452,10 +452,7 @@ function Home() {
         
         <div className="relative z-10 container mx-auto px-4">
           <div className="max-w-5xl mx-auto text-center">
-            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 backdrop-blur-sm rounded-full mb-10 border border-blue-200/50">
-              <Radio className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-semibold text-gray-700">REAL-TIME DEPLOYMENT</span>
-            </div>
+           
             
             <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-10">
               Transform Your City's
