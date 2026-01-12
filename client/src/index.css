@@ -90,3 +90,24 @@ html {
                     linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 50px 50px;
 }
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(1deg); }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(-1deg); }
+}
+@keyframes traffic-flow {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -20; }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.05); }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+.animate-traffic-flow { animation: traffic-flow 20s linear infinite; }
+.animate-traffic-flow-delayed { animation: traffic-flow 20s linear infinite 2s; }
+.animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }

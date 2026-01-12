@@ -118,7 +118,7 @@ function Home() {
           <path
             d="M0,50 Q25,30 50,50 T100,50"
             fill="none"
-            stroke="url(#gradient1)"
+            stroke="url(#)"
             strokeWidth="0.5"
             strokeDasharray="5,5"
             className="animate-traffic-flow"
@@ -148,30 +148,8 @@ function Home() {
 
   return (
     <div className="overflow-hidden">
-      {/* Custom animations in global scope - Add to your global CSS */}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(1deg); }
-        }
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-30px) rotate(-1deg); }
-        }
-        @keyframes traffic-flow {
-          0% { stroke-dashoffset: 0; }
-          100% { stroke-dashoffset: -20; }
-        }
-        @keyframes pulse-glow {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(1.05); }
-        }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
-        .animate-traffic-flow { animation: traffic-flow 20s linear infinite; }
-        .animate-traffic-flow-delayed { animation: traffic-flow 20s linear infinite 2s; }
-        .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
-      `}</style>
+   
+      
 
       {/* Hero Section with Parallax */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -189,7 +167,7 @@ function Home() {
                   Smart Traffic
                 </span>
                 <span className="block mt-4 relative">
-                  <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-cyan-500 to-emerald-500 blur-2xl opacity-50" />
+               
                   <span className="relative bg-gradient-to-r from-blue-600 via-cyan-500 to-emerald-500 bg-clip-text text-transparent">
                     Management
                   </span>
