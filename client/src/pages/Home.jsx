@@ -118,7 +118,7 @@ function Home() {
           <path
             d="M0,50 Q25,30 50,50 T100,50"
             fill="none"
-            stroke="url(#)"
+            stroke="url(#gradient1)"
             strokeWidth="0.5"
             strokeDasharray="5,5"
             className="animate-traffic-flow"
@@ -154,6 +154,7 @@ function Home() {
       {/* Hero Section with Parallax */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <AnimatedBackground />
+      
         
         <div ref={parallaxRef} className="relative z-10 container mx-auto px-4 py-20">
           <div className="max-w-7xl mx-auto">
