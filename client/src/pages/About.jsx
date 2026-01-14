@@ -53,9 +53,7 @@ function About() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-emerald-500/5"></div>
         <div className="container relative mx-auto px-4 py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-emerald-100 rounded-full mb-6 border border-blue-200">
-              <span className="text-sm font-medium text-gray-700">ABOUT OUR JOURNEY</span>
-            </div>
+            
             
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Building Smarter

@@ -14,6 +14,16 @@ function DashboardRedirect() {
   const [error, setError] = useState("");
   const [isRedirecting, setIsRedirecting] = useState(false);
 
+  // Determine the dashboard URL based on environment
+  const getDashboardUrl = () => {
+    // Check if we're in development/local environment
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return "http://localhost:3001";
+    }
+    // Production environment - use the Vercel URL
+    return "https://smart-traffic-management-system-bpm.vercel.app";
+  };
+
   // Simpler, more reliable redirect function
   const handleDirectRedirect = () => {
     try {
@@ -25,8 +35,9 @@ function DashboardRedirect() {
         return;
       }
 
-      const dashboardUrl = "https://smart-traffic-management-system-bpm.vercel.app";
-      
+      const dashboardUrl = getDashboardUrl();
+      console.log("Environment:", window.location.hostname);
+      console.log("Redirecting to:", dashboardUrl);
 
       const params = new URLSearchParams({
         token: token,
@@ -39,7 +50,7 @@ function DashboardRedirect() {
 
       const redirectUrl = `${dashboardUrl}?${params.toString()}`;
       
-      console.log("Redirecting to:", redirectUrl);
+      console.log("Full redirect URL:", redirectUrl);
       window.location.href = redirectUrl;
       
     } catch (err) {
@@ -89,6 +100,9 @@ function DashboardRedirect() {
     }
   };
 
+  // Optional: Add a development indicator
+  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-emerald-50/20 pt-16">
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
@@ -99,6 +113,18 @@ function DashboardRedirect() {
 
       <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl w-full">
+          {/* Development environment indicator */}
+          {isDevelopment && (
+            <div className="mb-6 p-3 bg-yellow-50 border border-yellow-200 rounded-xl">
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
+                <p className="text-sm font-medium text-yellow-800">
+                  Development Mode: Redirecting to localhost:3001
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 sm:p-12 border border-gray-200/50 shadow-2xl shadow-blue-500/5">
             {error && (
               <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl">
@@ -144,6 +170,13 @@ function DashboardRedirect() {
                 </span>
                 ! Redirecting you to the analytics dashboard.
               </p>
+              
+              {/* Show the target URL */}
+              <div className="inline-block px-4 py-2 bg-gray-100 rounded-lg">
+                <code className="text-sm text-gray-700 font-mono">
+                  {getDashboardUrl()}
+                </code>
+              </div>
             </div>
 
             <div className="mb-10">
